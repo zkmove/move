@@ -298,25 +298,46 @@ pub(crate) fn footprinting(
         },
         Bytecode::Call(fh_idx) => {
             let func = resolver.function_from_handle(*fh_idx)?;
-            Operation::Call {
-                fh_idx: fh_idx.0,
-                args: interp
-                    .operand_stack
-                    .last_n(func.param_count())?
-                    .map(|t| TracedValueBuilder::new(t).build(&footprints.state.reverse_local_value_addressings).items)
-                    .collect::<Vec<_>>(),
+            if func.is_native() {
+                Operation::NativeCall {
+                    fh_idx: fh_idx.0,
+                    args: interp
+                        .operand_stack
+                        .last_n(func.param_count())?
+                        .map(|t| TracedValueBuilder::new(t).build(&footprints.state.reverse_local_value_addressings).items)
+                        .collect::<Vec<_>>(),
+                }
+            } else {
+                Operation::Call {
+                    fh_idx: fh_idx.0,
+                    args: interp
+                        .operand_stack
+                        .last_n(func.param_count())?
+                        .map(|t| TracedValueBuilder::new(t).build(&footprints.state.reverse_local_value_addressings).items)
+                        .collect::<Vec<_>>(),
+                }
             }
         },
         Bytecode::CallGeneric(fh_idx) => {
             let func = resolver.function_from_instantiation(*fh_idx)?;
-
-            Operation::CallGeneric {
-                fh_idx: fh_idx.0,
-                args: interp
-                    .operand_stack
-                    .last_n(func.param_count())?
-                    .map(|t| TracedValueBuilder::new(t).build(&footprints.state.reverse_local_value_addressings).items)
-                    .collect::<Vec<_>>(),
+            if func.is_native() {
+                Operation::NativeCallGeneric {
+                    fh_idx: fh_idx.0,
+                    args: interp
+                        .operand_stack
+                        .last_n(func.param_count())?
+                        .map(|t| TracedValueBuilder::new(t).build(&footprints.state.reverse_local_value_addressings).items)
+                        .collect::<Vec<_>>(),
+                }
+            } else {
+                Operation::CallGeneric {
+                    fh_idx: fh_idx.0,
+                    args: interp
+                        .operand_stack
+                        .last_n(func.param_count())?
+                        .map(|t| TracedValueBuilder::new(t).build(&footprints.state.reverse_local_value_addressings).items)
+                        .collect::<Vec<_>>(),
+                }
             }
         },
         Bytecode::Pack(sd_idx) => {

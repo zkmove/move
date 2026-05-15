@@ -180,6 +180,6 @@ whoami = "1.5.0"
 x25519-dalek = "1.2.0"
 z3tracer = "0.8.0"
 
-poseidon-base = { git = "https://github.com/zkmove/poseidon-circuit.git", rev = "7ef8a76c" }
-halo2curves = { version = "0.6" }
+poseidon-base = { git = "https://github.com/zkmove/poseidon-circuit.git", branch = "main" }
+halo2curves = { git = "https://github.com/zkmove/halo2curves", branch = "zkmove" }
 
